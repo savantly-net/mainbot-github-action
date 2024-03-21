@@ -50,6 +50,9 @@ function postDocument(_a) {
             (0, core_1.info)("Attaching token to request: ${token.slice(-5)}");
             headers["Authorization"] = `Bearer ${token}`;
         }
+        else {
+            (0, core_1.info)("No auth token provided");
+        }
         try {
             const response = yield (0, node_fetch_1.default)(apiUrl, {
                 method: "POST",
