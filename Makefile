@@ -30,7 +30,7 @@ build:
 	yarn build
 
 .PHONY: release
-release: build ensure-git-repo-pristine bump-version update-chart-yaml-with-next-version
+release: build ensure-git-repo-pristine bump-version update-package-json-with-next-version
 	@echo "Preparing release..."
 	@echo "Version: $(VERSION)"
 	@echo "Commit: $(GIT_COMMIT)"
