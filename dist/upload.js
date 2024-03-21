@@ -35,6 +35,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const core_1 = require("@actions/core");
 const fs = __importStar(require("fs"));
 const glob_1 = require("glob");
 const node_fetch_1 = __importDefault(require("node-fetch"));
@@ -70,15 +71,15 @@ function postDocument(_a) {
             return responseData;
         }
         catch (error) {
-            console.error("Error posting document:", error);
+            (0, core_1.error)(`Error posting document: error`);
             return null;
         }
     });
 }
 function uploadFiles(_a) {
     return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, }) {
-        console.log(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
-        console.log(`attaching metadata: ${JSON.stringify(metadata)}`);
+        (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
+        (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
         for (const globPattern of globPatterns) {
             yield (0, glob_1.glob)(globPattern, { nodir: true }).then((files) => __awaiter(this, void 0, void 0, function* () {
                 for (const file of files) {
@@ -93,11 +94,11 @@ function uploadFiles(_a) {
                             token,
                         });
                         if (response) {
-                            console.log(`File uploaded successfully. ${relativePath} created vectors: ${file}`, response);
+                            (0, core_1.info)(`File uploaded successfully. ${relativePath} created vectors: ${file}`);
                         }
                     }
                     catch (error) {
-                        console.error("Error uploading file:", error);
+                        (0, core_1.error)("Error uploading file:" + error);
                     }
                 }
             }));
