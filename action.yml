@@ -17,6 +17,9 @@ inputs:
   client-secret:
     description: 'API Client Secret'
     required: false
+  token-url:
+    description: 'API Token URL'
+    required: false
 runs:
   using: 'node20'
   main: 'dist/index.js'

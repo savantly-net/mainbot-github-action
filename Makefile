@@ -30,6 +30,12 @@ build:
 	rm -rf dist
 	yarn build
 
+.PHONY: commit
+commit: build add-dist
+	@echo "Committing changes"
+	git commit -m "Bump version to $(NEXT_VERSION)"
+	git push
+
 .PHONY: add-dist
 add-dist:
 	@echo "Adding dist to git"

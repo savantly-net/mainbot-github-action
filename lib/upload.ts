@@ -23,10 +23,14 @@ async function postDocument({
 }: PostDocumentOptions) {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
+    "Accept": "application/json",
   };
 
   if (token) {
+    info("Attaching token to request: ${token.slice(-5)}");
     headers["Authorization"] = `Bearer ${token}`;
+  } else {
+    info("No auth token provided");
   }
 
   try {
@@ -54,8 +58,8 @@ async function postDocument({
     const responseData = (await response.json()) as AddDocumentResponse;
     return responseData;
   } catch (error) {
-    logError(`Error posting document: error`);
-    return null;
+    logError(`Error posting document: ${error}`);
+    throw error;
   }
 }
 
@@ -103,6 +107,7 @@ async function uploadFiles({
           }
         } catch (error) {
           logError("Error uploading file:" + error);
+          throw error;
         }
       }
     });

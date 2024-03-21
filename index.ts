@@ -1,5 +1,12 @@
-import { getInput, getMultilineInput, info, error as logError, setFailed } from "@actions/core";
-import uploadFiles from "./upload";
+import {
+  getInput,
+  getMultilineInput,
+  info,
+  error as logError,
+  setFailed,
+} from "@actions/core";
+import { context } from "@actions/github";
+import uploadFiles from "./lib/upload";
 
 async function run() {
   try {
@@ -15,17 +22,22 @@ async function run() {
 
     const clientId = getInput("client-id");
     const clientSecret = getInput("client-secret");
-    const tokenUrl = `${apiUrl}/oauth/token`;
+    const tokenUrl = getInput("token-url");
 
     let token: string | undefined;
 
     if (clientId && clientSecret) {
+      if (!tokenUrl) {
+        throw new Error("token-url is required if client-id and client-secret are provided");
+      }
       info("Getting OAuth token");
       token = await getOAuthToken({
         clientId,
         clientSecret,
         tokenUrl,
       });
+    } else {
+      info("No client id or client secret provided, uploading without token");
     }
 
     uploadFiles({
@@ -34,13 +46,13 @@ async function run() {
       apiUrl,
       token,
       metadata: {
-        commitSha: github.context.sha,
-        repo: github.context.repo.repo,
-        owner: github.context.repo.owner,
+        commitSha: context.sha,
+        repo: context.repo.repo,
+        owner: context.repo.owner,
       },
     });
   } catch (error) {
-    logError(JSON.stringify(error))
+    logError(JSON.stringify(error));
     setFailed(JSON.stringify(error));
   }
 }
