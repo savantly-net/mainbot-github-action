@@ -24,8 +24,13 @@ update-package-json-with-next-version:
 	git add package.json
 
 
+.PHONY: build
+build:
+	@echo "Building the project"
+	yarn build
+
 .PHONY: release
-release: ensure-git-repo-pristine bump-version update-chart-yaml-with-next-version
+release: build ensure-git-repo-pristine bump-version update-chart-yaml-with-next-version
 	@echo "Preparing release..."
 	@echo "Version: $(VERSION)"
 	@echo "Commit: $(GIT_COMMIT)"
