@@ -33,7 +33,7 @@ build:
 .PHONY: add-dist
 add-dist:
 	@echo "Adding dist to git"
-	git add dist
+	git add dist/**
 
 .PHONY: release
 release: build add-dist ensure-git-repo-pristine bump-version update-package-json-with-next-version
