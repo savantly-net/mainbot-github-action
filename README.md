@@ -7,7 +7,7 @@ This GitHub Action enables you to automatically upload files from your repositor
 
 ### `glob-pattern`
 
-**Required** The glob pattern used to find files in the repository. Default: `**/*`.  
+**Required** The glob pattern used to find files in the repository. Default: `./docs/**`.  
 
 ### `namespace`
 
@@ -66,7 +66,8 @@ This GitHub Action enables you to automatically upload files from your repositor
          - name: Upload Files
            uses: savantly-net/mainbot-github-action@main
            with:
-             glob-pattern: '**/*.txt'  # Set your file pattern here
+             glob-patterns: '**/*.txt'  # Set your file pattern here
+             namespace: '/admin'
              api-url: 'https://mainbot.savantly.net/api/document/add'
              client-id: ${{ secrets.CLIENT_ID }}
              client-secret: ${{ secrets.CLIENT_SECRET }}
