@@ -36453,6 +36453,13 @@ function getOidcAccessToken(_a) {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
             });
+            // verify response status and data
+            if (response.status !== 200) {
+                throw new Error(`Failed to get oidc access token. HTTP status: ${response.status}`);
+            }
+            if (!response.data.access_token) {
+                throw new Error("No access token found in oidc response");
+            }
             return response.data;
         }
         catch (error) {
@@ -36523,7 +36530,7 @@ function postDocument(_a) {
             "Accept": "application/json",
         };
         if (token) {
-            (0, core_1.info)(`Attaching token to request: ${token.slice(-5)}`);
+            (0, core_1.info)(`Attaching token to request: ${token.slice(-8)}`);
             headers["Authorization"] = `Bearer ${token}`;
         }
         else {

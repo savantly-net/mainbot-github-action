@@ -27,6 +27,13 @@ function getOidcAccessToken(_a) {
                     "Content-Type": "application/x-www-form-urlencoded",
                 },
             });
+            // verify response status and data
+            if (response.status !== 200) {
+                throw new Error(`Failed to get oidc access token. HTTP status: ${response.status}`);
+            }
+            if (!response.data.access_token) {
+                throw new Error("No access token found in oidc response");
+            }
             return response.data;
         }
         catch (error) {
