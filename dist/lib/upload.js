@@ -44,6 +44,7 @@ function postDocument(_a) {
     return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
         const headers = {
             "Content-Type": "application/json",
+            "Accept": "application/json",
         };
         if (token) {
             (0, core_1.info)("Attaching token to request: ${token.slice(-5)}");
