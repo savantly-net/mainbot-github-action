@@ -19,25 +19,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __importDefault(__nccwpck_require__(9935));
+const core_1 = __nccwpck_require__(9935);
 const github_1 = __importDefault(__nccwpck_require__(2835));
 const upload_1 = __importDefault(__nccwpck_require__(8531));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const globPatterns = core_1.default.getInput("glob-patterns", {
+            const globPatterns = (0, core_1.getMultilineInput)("glob-patterns", {
                 required: true,
             });
-            const namespace = core_1.default.getInput("namespace", {
+            const namespace = (0, core_1.getInput)("namespace", {
                 required: true,
             });
-            const apiUrl = core_1.default.getInput("api-url", {
+            const apiUrl = (0, core_1.getInput)("api-url", {
                 required: true,
             });
-            const clientId = core_1.default.getInput("client-id");
-            const clientSecret = core_1.default.getInput("client-secret");
+            const clientId = (0, core_1.getInput)("client-id");
+            const clientSecret = (0, core_1.getInput)("client-secret");
             const tokenUrl = `${apiUrl}/oauth/token`;
-            const globPatternArray = globPatterns.split("\n");
             github_1.default.context.serverUrl;
             let token;
             if (clientId && clientSecret) {
@@ -49,7 +48,7 @@ function run() {
             }
             (0, upload_1.default)({
                 namespace,
-                globPatterns: globPatternArray,
+                globPatterns,
                 apiUrl,
                 token,
                 metadata: {
@@ -60,7 +59,7 @@ function run() {
             });
         }
         catch (error) {
-            core_1.default.setFailed(JSON.stringify(error));
+            (0, core_1.setFailed)(JSON.stringify(error));
         }
     });
 }
