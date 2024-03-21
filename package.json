@@ -1,0 +1,35 @@
+{
+  "name": "mainbot-github-action",
+  "version": "1.0.0",
+  "description": "Github actions for Mainbot",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/savantly-net/mainbot-github-action.git"
+  },
+  "keywords": [
+    "ai",
+    "rag",
+    "mainbot",
+    "genai"
+  ],
+  "author": "Jeremy Branham <jeremy@savantly.net>",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/savantly-net/mainbot-github-action/issues"
+  },
+  "homepage": "https://github.com/savantly-net/mainbot-github-action#readme",
+  "dependencies": {
+    "@actions/core": "^1.10.1",
+    "@actions/github": "^6.0.0",
+    "@types/glob": "^8.1.0",
+    "@types/node": "^20.11.30",
+    "glob": "^10.3.10",
+    "node-fetch": "^3.3.2",
+    "typescript": "^5.4.3"
+  }
+}

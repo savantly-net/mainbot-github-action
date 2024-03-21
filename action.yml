@@ -1,0 +1,22 @@
+name: 'Upload Documents'
+description: 'Uploads files to a Mainbot API endpoint'
+inputs:
+  glob-patterns:
+    description: 'Patterns to match files to upload. Add multiple patterns separated by a new line.'
+    required: true
+    default: './docs/**'
+  namespace:
+    description: 'Namespace for the documents'
+    required: true
+  api-url:
+    description: 'The Mainbot API URL for document upload'
+    required: true
+  client-id:
+    description: 'API Client ID'
+    required: false
+  client-secret:
+    description: 'API Client Secret'
+    required: false
+runs:
+  using: 'node20'
+  main: 'index.js'
