@@ -20,7 +20,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __nccwpck_require__(9935);
-const github_1 = __importDefault(__nccwpck_require__(2835));
+const github_1 = __nccwpck_require__(2835);
 const upload_1 = __importDefault(__nccwpck_require__(8531));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -37,7 +37,6 @@ function run() {
             const clientId = (0, core_1.getInput)("client-id");
             const clientSecret = (0, core_1.getInput)("client-secret");
             const tokenUrl = `${apiUrl}/oauth/token`;
-            github_1.default.context.serverUrl;
             let token;
             if (clientId && clientSecret) {
                 (0, core_1.info)("Getting OAuth token");
@@ -53,9 +52,9 @@ function run() {
                 apiUrl,
                 token,
                 metadata: {
-                    commitSha: github_1.default.context.sha,
-                    repo: github_1.default.context.repo.repo,
-                    owner: github_1.default.context.repo.owner,
+                    commitSha: github_1.context.sha,
+                    repo: github_1.context.repo.repo,
+                    owner: github_1.context.repo.owner,
                 },
             });
         }

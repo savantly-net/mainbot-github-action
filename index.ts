@@ -1,5 +1,4 @@
-import { getInput, getMultilineInput, setFailed, info, error as logError } from "@actions/core";
-import github from "@actions/github";
+import { getInput, getMultilineInput, info, error as logError, setFailed } from "@actions/core";
 import uploadFiles from "./upload";
 
 async function run() {
@@ -17,8 +16,6 @@ async function run() {
     const clientId = getInput("client-id");
     const clientSecret = getInput("client-secret");
     const tokenUrl = `${apiUrl}/oauth/token`;
-
-    github.context.serverUrl;
 
     let token: string | undefined;
 
