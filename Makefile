@@ -22,6 +22,9 @@ update-package-json-with-next-version:
 	sed "s/\"version\": \".*\"/\"version\": \"$(VERSION)\"/" ./package.json > ./package.json.tmp
 	mv ./package.json.tmp ./package.json
 	git add package.json
+	git add VERSION
+	git commit -m "Bumped version to $(VERSION)"
+	git push
 
 
 .PHONY: build
