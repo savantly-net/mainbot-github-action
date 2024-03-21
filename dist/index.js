@@ -34038,7 +34038,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __nccwpck_require__(9935);
 const github_1 = __nccwpck_require__(2835);
-const upload_1 = __importDefault(__nccwpck_require__(4180));
+const upload_1 = __importDefault(__nccwpck_require__(562));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -34104,7 +34104,7 @@ run();
 
 /***/ }),
 
-/***/ 4180:
+/***/ 562:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -34156,6 +34156,7 @@ function postDocument(_a) {
             "Content-Type": "application/json",
         };
         if (token) {
+            (0, core_1.info)("Attaching token to request: ${token.slice(-5)}");
             headers["Authorization"] = `Bearer ${token}`;
         }
         try {
@@ -34181,7 +34182,7 @@ function postDocument(_a) {
             return responseData;
         }
         catch (error) {
-            (0, core_1.error)(`Error posting document: error`);
+            (0, core_1.error)(`Error posting document: ${error}`);
             return null;
         }
     });
