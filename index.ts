@@ -1,24 +1,22 @@
-import core from "@actions/core";
+import { getInput, getMultilineInput, setFailed } from "@actions/core";
 import github from "@actions/github";
 import uploadFiles from "./upload";
 
 async function run() {
   try {
-    const globPatterns = core.getInput("glob-patterns", {
+    const globPatterns = getMultilineInput("glob-patterns", {
       required: true,
     });
-    const namespace = core.getInput("namespace", {
+    const namespace = getInput("namespace", {
       required: true,
     });
-    const apiUrl = core.getInput("api-url", {
+    const apiUrl = getInput("api-url", {
       required: true,
     });
 
-    const clientId = core.getInput("client-id");
-    const clientSecret = core.getInput("client-secret");
+    const clientId = getInput("client-id");
+    const clientSecret = getInput("client-secret");
     const tokenUrl = `${apiUrl}/oauth/token`;
-
-    const globPatternArray = globPatterns.split("\n");
 
     github.context.serverUrl;
 
@@ -34,7 +32,7 @@ async function run() {
 
     uploadFiles({
       namespace,
-      globPatterns: globPatternArray,
+      globPatterns,
       apiUrl,
       token,
       metadata: {
@@ -44,7 +42,7 @@ async function run() {
       },
     });
   } catch (error) {
-    core.setFailed(JSON.stringify(error));
+    setFailed(JSON.stringify(error));
   }
 }
 
