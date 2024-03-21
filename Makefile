@@ -30,11 +30,16 @@ build:
 	rm -rf dist
 	yarn build
 
+.PHONY: add-dist
+add-dist:
+	@echo "Adding dist to git"
+	git add dist
+
 .PHONY: release
-release: build ensure-git-repo-pristine bump-version update-package-json-with-next-version
+release: build add-dist ensure-git-repo-pristine bump-version update-package-json-with-next-version
 	@echo "Preparing release..."
 	@echo "Version: $(VERSION)"
-	@echo "Commit: $(GIT_COMMIT)"
+	git commit -m "Bumped version to $(VERSION)"
 	git tag -a $(TAGGED_VERSION) -m "Release $(VERSION)"
 	git push origin $(TAGGED_VERSION)
 	@echo "Tag $(TAGGED_VERSION) created and pushed to origin"
