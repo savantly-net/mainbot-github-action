@@ -39,6 +39,17 @@ export async function getOidcAccessToken({
       }
     );
 
+    // verify response status and data
+    if (response.status !== 200) {
+      throw new Error(
+        `Failed to get oidc access token. HTTP status: ${response.status}`
+      );
+    }
+
+    if (!response.data.access_token) {
+      throw new Error("No access token found in oidc response");
+    }
+
     return response.data;
   } catch (error) {
     console.error("Error fetching oidc access token:", error);
