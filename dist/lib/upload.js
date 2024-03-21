@@ -53,8 +53,9 @@ function postDocument(_a) {
         else {
             (0, core_1.info)("No auth token provided");
         }
+        const documentAddEndpoint = `${apiUrl}/api/document/add`;
         try {
-            const response = yield (0, node_fetch_1.default)(apiUrl, {
+            const response = yield (0, node_fetch_1.default)(documentAddEndpoint, {
                 method: "POST",
                 headers: headers,
                 body: JSON.stringify({
