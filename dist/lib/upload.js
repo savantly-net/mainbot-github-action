@@ -47,7 +47,7 @@ function postDocument(_a) {
             "Accept": "application/json",
         };
         if (token) {
-            (0, core_1.info)("Attaching token to request: ${token.slice(-5)}");
+            (0, core_1.info)(`Attaching token to request: ${token.slice(-5)}`);
             headers["Authorization"] = `Bearer ${token}`;
         }
         else {
