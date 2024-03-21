@@ -17,8 +17,8 @@ inputs:
   client-secret:
     description: 'API Client Secret'
     required: false
-  token-url:
-    description: 'API Token URL'
+  token-endpoint:
+    description: 'API Token Endpoint'
     required: false
 runs:
   using: 'node20'
