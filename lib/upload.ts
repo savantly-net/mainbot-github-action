@@ -27,7 +27,7 @@ async function postDocument({
   };
 
   if (token) {
-    info("Attaching token to request: ${token.slice(-5)}");
+    info(`Attaching token to request: ${token.slice(-5)}`);
     headers["Authorization"] = `Bearer ${token}`;
   } else {
     info("No auth token provided");
