@@ -39,8 +39,7 @@ add-dist:
 release: build add-dist ensure-git-repo-pristine bump-version update-package-json-with-next-version
 	@echo "Preparing release..."
 	@echo "Version: $(VERSION)"
-	git commit -m "Committing final changes to $(VERSION)"
+	git commit -m "Releasing $(VERSION) and prepared for $(NEXT_VERSION)"
 	git tag -a $(TAGGED_VERSION) -m "Release $(VERSION)"
 	git push origin $(TAGGED_VERSION)
 	@echo "Tag $(TAGGED_VERSION) created and pushed to origin"
-	git commit -m "Released $(VERSION) and prepared for $(NEXT_VERSION)"
