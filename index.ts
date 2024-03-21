@@ -1,4 +1,4 @@
-import { getInput, getMultilineInput, setFailed } from "@actions/core";
+import { getInput, getMultilineInput, setFailed, info, error as logError } from "@actions/core";
 import github from "@actions/github";
 import uploadFiles from "./upload";
 
@@ -23,6 +23,7 @@ async function run() {
     let token: string | undefined;
 
     if (clientId && clientSecret) {
+      info("Getting OAuth token");
       token = await getOAuthToken({
         clientId,
         clientSecret,
@@ -42,6 +43,7 @@ async function run() {
       },
     });
   } catch (error) {
+    logError(JSON.stringify(error))
     setFailed(JSON.stringify(error));
   }
 }

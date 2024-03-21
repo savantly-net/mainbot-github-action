@@ -1,3 +1,4 @@
+import { info, error as logError } from "@actions/core";
 import * as fs from "fs";
 import { glob } from "glob";
 import fetch from "node-fetch";
@@ -53,7 +54,7 @@ async function postDocument({
     const responseData = (await response.json()) as AddDocumentResponse;
     return responseData;
   } catch (error) {
-    console.error("Error posting document:", error);
+    logError(`Error posting document: error`);
     return null;
   }
 }
@@ -73,10 +74,10 @@ async function uploadFiles({
   token,
   metadata,
 }: UploadFilesOptions): Promise<void> {
-  console.log(
+  info(
     `uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`
   );
-  console.log(`attaching metadata: ${JSON.stringify(metadata)}`);
+  info(`attaching metadata: ${JSON.stringify(metadata)}`);
 
   for (const globPattern of globPatterns) {
     await glob(globPattern, { nodir: true }).then(async (files) => {
@@ -96,13 +97,12 @@ async function uploadFiles({
           });
 
           if (response) {
-            console.log(
-              `File uploaded successfully. ${relativePath} created vectors: ${file}`,
-              response
+            info(
+              `File uploaded successfully. ${relativePath} created vectors: ${file}`
             );
           }
         } catch (error) {
-          console.error("Error uploading file:", error);
+          logError("Error uploading file:" + error);
         }
       }
     });
