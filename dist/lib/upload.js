@@ -77,7 +77,7 @@ function postDocument(_a) {
         }
         catch (error) {
             (0, core_1.error)(`Error posting document: ${error}`);
-            return null;
+            throw error;
         }
     });
 }
@@ -104,6 +104,7 @@ function uploadFiles(_a) {
                     }
                     catch (error) {
                         (0, core_1.error)("Error uploading file:" + error);
+                        throw error;
                     }
                 }
             }));

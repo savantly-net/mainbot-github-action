@@ -34053,9 +34053,12 @@ function run() {
             });
             const clientId = (0, core_1.getInput)("client-id");
             const clientSecret = (0, core_1.getInput)("client-secret");
-            const tokenUrl = `${apiUrl}/oauth/token`;
+            const tokenUrl = (0, core_1.getInput)("token-url");
             let token;
             if (clientId && clientSecret) {
+                if (!tokenUrl) {
+                    throw new Error("token-url is required if client-id and client-secret are provided");
+                }
                 (0, core_1.info)("Getting OAuth token");
                 token = yield getOAuthToken({
                     clientId,
@@ -34190,7 +34193,7 @@ function postDocument(_a) {
         }
         catch (error) {
             (0, core_1.error)(`Error posting document: ${error}`);
-            return null;
+            throw error;
         }
     });
 }
@@ -34217,6 +34220,7 @@ function uploadFiles(_a) {
                     }
                     catch (error) {
                         (0, core_1.error)("Error uploading file:" + error);
+                        throw error;
                     }
                 }
             }));
