@@ -33,8 +33,10 @@ async function postDocument({
     info("No auth token provided");
   }
 
+  const documentAddEndpoint = `${apiUrl}/api/document/add`;
+
   try {
-    const response = await fetch(apiUrl, {
+    const response = await fetch(documentAddEndpoint, {
       method: "POST",
       headers: headers,
       body: JSON.stringify({
