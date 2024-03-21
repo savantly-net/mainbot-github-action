@@ -28,6 +28,7 @@
     "@actions/github": "^6.0.0",
     "@types/glob": "^8.1.0",
     "@types/node": "^20.11.30",
+    "axios": "^1.6.8",
     "glob": "^10.3.10",
     "node-fetch": "^3.3.2",
     "typescript": "^5.4.3"

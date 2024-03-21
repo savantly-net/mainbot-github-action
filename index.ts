@@ -6,6 +6,7 @@ import {
   setFailed,
 } from "@actions/core";
 import { context } from "@actions/github";
+import { OIDCTokenResponse, getOidcAccessToken } from "./lib/oidc";
 import uploadFiles from "./lib/upload";
 
 async function run() {
@@ -22,19 +23,21 @@ async function run() {
 
     const clientId = getInput("client-id");
     const clientSecret = getInput("client-secret");
-    const tokenUrl = getInput("token-url");
+    const tokenEndpoint = getInput("token-endpoint");
 
-    let token: string | undefined;
+    let token: OIDCTokenResponse | undefined = undefined;
 
     if (clientId && clientSecret) {
-      if (!tokenUrl) {
-        throw new Error("token-url is required if client-id and client-secret are provided");
+      if (!tokenEndpoint) {
+        throw new Error(
+          "token-url is required if client-id and client-secret are provided"
+        );
       }
       info("Getting OAuth token");
-      token = await getOAuthToken({
+      token = await getOidcAccessToken({
         clientId,
         clientSecret,
-        tokenUrl,
+        tokenEndpoint,
       });
     } else {
       info("No client id or client secret provided, uploading without token");
@@ -44,7 +47,7 @@ async function run() {
       namespace,
       globPatterns,
       apiUrl,
-      token,
+      token: token?.access_token,
       metadata: {
         commitSha: context.sha,
         repo: context.repo.repo,
@@ -55,35 +58,6 @@ async function run() {
     logError(JSON.stringify(error));
     setFailed(JSON.stringify(error));
   }
-}
-
-interface getOAuthTokenOptions {
-  clientId: string;
-  clientSecret: string;
-  tokenUrl: string;
-}
-
-async function getOAuthToken({
-  clientId,
-  clientSecret,
-  tokenUrl,
-}: getOAuthTokenOptions): Promise<string> {
-  const credentials = btoa(`${clientId}:${clientSecret}`);
-  const response = await fetch(tokenUrl, {
-    method: "POST",
-    headers: {
-      Authorization: `Basic ${credentials}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-    body: "grant_type=client_credentials",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Error: ${response.status}`);
-  }
-
-  const data = await response.json();
-  return data.access_token;
 }
 
 run();
