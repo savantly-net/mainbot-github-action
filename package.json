@@ -1,6 +1,6 @@
 {
   "name": "mainbot-github-action",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Github actions for Mainbot",
   "main": "dist/index.js",
   "scripts": {
