@@ -1,208 +1,6 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
-/***/ 647:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(9935);
-const github_1 = __nccwpck_require__(2835);
-const upload_1 = __importDefault(__nccwpck_require__(8531));
-function run() {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const globPatterns = (0, core_1.getMultilineInput)("glob-patterns", {
-                required: true,
-            });
-            const namespace = (0, core_1.getInput)("namespace", {
-                required: true,
-            });
-            const apiUrl = (0, core_1.getInput)("api-url", {
-                required: true,
-            });
-            const clientId = (0, core_1.getInput)("client-id");
-            const clientSecret = (0, core_1.getInput)("client-secret");
-            const tokenUrl = `${apiUrl}/oauth/token`;
-            let token;
-            if (clientId && clientSecret) {
-                (0, core_1.info)("Getting OAuth token");
-                token = yield getOAuthToken({
-                    clientId,
-                    clientSecret,
-                    tokenUrl,
-                });
-            }
-            (0, upload_1.default)({
-                namespace,
-                globPatterns,
-                apiUrl,
-                token,
-                metadata: {
-                    commitSha: github_1.context.sha,
-                    repo: github_1.context.repo.repo,
-                    owner: github_1.context.repo.owner,
-                },
-            });
-        }
-        catch (error) {
-            (0, core_1.error)(JSON.stringify(error));
-            (0, core_1.setFailed)(JSON.stringify(error));
-        }
-    });
-}
-function getOAuthToken(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ clientId, clientSecret, tokenUrl, }) {
-        const credentials = btoa(`${clientId}:${clientSecret}`);
-        const response = yield fetch(tokenUrl, {
-            method: "POST",
-            headers: {
-                Authorization: `Basic ${credentials}`,
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: "grant_type=client_credentials",
-        });
-        if (!response.ok) {
-            throw new Error(`Error: ${response.status}`);
-        }
-        const data = yield response.json();
-        return data.access_token;
-    });
-}
-run();
-
-
-/***/ }),
-
-/***/ 8531:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
-
-"use strict";
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __nccwpck_require__(9935);
-const fs = __importStar(__nccwpck_require__(7147));
-const glob_1 = __nccwpck_require__(3067);
-const node_fetch_1 = __importDefault(__nccwpck_require__(6143));
-const path = __importStar(__nccwpck_require__(1017));
-function postDocument(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
-        const headers = {
-            "Content-Type": "application/json",
-        };
-        if (token) {
-            headers["Authorization"] = `Bearer ${token}`;
-        }
-        try {
-            const response = yield (0, node_fetch_1.default)(apiUrl, {
-                method: "POST",
-                headers: headers,
-                body: JSON.stringify({
-                    namespace: namespace,
-                    text: documentText,
-                    metadata: metadata,
-                }),
-            });
-            if (!response.ok) {
-                try {
-                    const errorData = yield response.json();
-                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorData}`);
-                }
-                catch (error) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-            }
-            const responseData = (yield response.json());
-            return responseData;
-        }
-        catch (error) {
-            (0, core_1.error)(`Error posting document: error`);
-            return null;
-        }
-    });
-}
-function uploadFiles(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, }) {
-        (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
-        (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
-        for (const globPattern of globPatterns) {
-            yield (0, glob_1.glob)(globPattern, { nodir: true }).then((files) => __awaiter(this, void 0, void 0, function* () {
-                for (const file of files) {
-                    try {
-                        const fileContent = fs.readFileSync(file, "utf8");
-                        const relativePath = path.relative(process.cwd(), file);
-                        const response = yield postDocument({
-                            namespace,
-                            documentText: fileContent,
-                            metadata: Object.assign(Object.assign({}, metadata), { path: relativePath }),
-                            apiUrl,
-                            token,
-                        });
-                        if (response) {
-                            (0, core_1.info)(`File uploaded successfully. ${relativePath} created vectors: ${file}`);
-                        }
-                    }
-                    catch (error) {
-                        (0, core_1.error)("Error uploading file:" + error);
-                    }
-                }
-            }));
-        }
-    });
-}
-exports["default"] = uploadFiles;
-
-
-/***/ }),
-
 /***/ 2690:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -34220,6 +34018,208 @@ function wrappy (fn, cb) {
 
 /***/ }),
 
+/***/ 1749:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core_1 = __nccwpck_require__(9935);
+const github_1 = __nccwpck_require__(2835);
+const upload_1 = __importDefault(__nccwpck_require__(4180));
+function run() {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const globPatterns = (0, core_1.getMultilineInput)("glob-patterns", {
+                required: true,
+            });
+            const namespace = (0, core_1.getInput)("namespace", {
+                required: true,
+            });
+            const apiUrl = (0, core_1.getInput)("api-url", {
+                required: true,
+            });
+            const clientId = (0, core_1.getInput)("client-id");
+            const clientSecret = (0, core_1.getInput)("client-secret");
+            const tokenUrl = `${apiUrl}/oauth/token`;
+            let token;
+            if (clientId && clientSecret) {
+                (0, core_1.info)("Getting OAuth token");
+                token = yield getOAuthToken({
+                    clientId,
+                    clientSecret,
+                    tokenUrl,
+                });
+            }
+            (0, upload_1.default)({
+                namespace,
+                globPatterns,
+                apiUrl,
+                token,
+                metadata: {
+                    commitSha: github_1.context.sha,
+                    repo: github_1.context.repo.repo,
+                    owner: github_1.context.repo.owner,
+                },
+            });
+        }
+        catch (error) {
+            (0, core_1.error)(JSON.stringify(error));
+            (0, core_1.setFailed)(JSON.stringify(error));
+        }
+    });
+}
+function getOAuthToken(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ clientId, clientSecret, tokenUrl, }) {
+        const credentials = btoa(`${clientId}:${clientSecret}`);
+        const response = yield fetch(tokenUrl, {
+            method: "POST",
+            headers: {
+                Authorization: `Basic ${credentials}`,
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "grant_type=client_credentials",
+        });
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        const data = yield response.json();
+        return data.access_token;
+    });
+}
+run();
+
+
+/***/ }),
+
+/***/ 4180:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const core_1 = __nccwpck_require__(9935);
+const fs = __importStar(__nccwpck_require__(7147));
+const glob_1 = __nccwpck_require__(3067);
+const node_fetch_1 = __importDefault(__nccwpck_require__(6143));
+const path = __importStar(__nccwpck_require__(1017));
+function postDocument(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
+        const headers = {
+            "Content-Type": "application/json",
+        };
+        if (token) {
+            headers["Authorization"] = `Bearer ${token}`;
+        }
+        try {
+            const response = yield (0, node_fetch_1.default)(apiUrl, {
+                method: "POST",
+                headers: headers,
+                body: JSON.stringify({
+                    namespace: namespace,
+                    text: documentText,
+                    metadata: metadata,
+                }),
+            });
+            if (!response.ok) {
+                try {
+                    const errorData = yield response.json();
+                    throw new Error(`HTTP error! status: ${response.status}, message: ${errorData}`);
+                }
+                catch (error) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            }
+            const responseData = (yield response.json());
+            return responseData;
+        }
+        catch (error) {
+            (0, core_1.error)(`Error posting document: error`);
+            return null;
+        }
+    });
+}
+function uploadFiles(_a) {
+    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, }) {
+        (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
+        (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
+        for (const globPattern of globPatterns) {
+            yield (0, glob_1.glob)(globPattern, { nodir: true }).then((files) => __awaiter(this, void 0, void 0, function* () {
+                for (const file of files) {
+                    try {
+                        const fileContent = fs.readFileSync(file, "utf8");
+                        const relativePath = path.relative(process.cwd(), file);
+                        const response = yield postDocument({
+                            namespace,
+                            documentText: fileContent,
+                            metadata: Object.assign(Object.assign({}, metadata), { path: relativePath }),
+                            apiUrl,
+                            token,
+                        });
+                        if (response) {
+                            (0, core_1.info)(`File uploaded successfully. ${relativePath} created vectors: ${file}`);
+                        }
+                    }
+                    catch (error) {
+                        (0, core_1.error)("Error uploading file:" + error);
+                    }
+                }
+            }));
+        }
+    });
+}
+exports["default"] = uploadFiles;
+
+
+/***/ }),
+
 /***/ 9491:
 /***/ ((module) => {
 
@@ -46714,7 +46714,7 @@ function fixResponseChunkedTransferBadEnding(request, errorCallback) {
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module is referenced by other modules so it can't be inlined
-/******/ 	var __webpack_exports__ = __nccwpck_require__(647);
+/******/ 	var __webpack_exports__ = __nccwpck_require__(1749);
 /******/ 	module.exports = __webpack_exports__;
 /******/ 	
 /******/ })()
