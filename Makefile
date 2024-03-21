@@ -27,6 +27,7 @@ update-package-json-with-next-version:
 .PHONY: build
 build:
 	@echo "Building the project"
+	rm -rf dist
 	yarn build
 
 .PHONY: release
