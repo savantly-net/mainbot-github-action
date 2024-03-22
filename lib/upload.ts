@@ -71,6 +71,7 @@ export interface UploadFilesOptions {
   apiUrl: string;
   token?: string;
   metadata: Record<string, string>;
+  baseFileUrl: string;
 }
 
 async function uploadFiles({
@@ -79,6 +80,7 @@ async function uploadFiles({
   apiUrl,
   token,
   metadata,
+  baseFileUrl
 }: UploadFilesOptions): Promise<void> {
   info(
     `uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`
@@ -90,13 +92,14 @@ async function uploadFiles({
       for (const file of files) {
         try {
           const fileContent = fs.readFileSync(file, "utf8");
-          const relativePath = path.relative(process.cwd(), file);
+          const fullUrl = `${baseFileUrl}/${file}`;
           const response = await postDocument({
             namespace,
             documentText: fileContent,
             metadata: {
               ...metadata,
-              path: relativePath,
+              path: file,
+              url: fullUrl,
             },
             apiUrl,
             token,
@@ -104,7 +107,7 @@ async function uploadFiles({
 
           if (response) {
             info(
-              `File uploaded successfully. ${relativePath} created vectors: ${file}`
+              `File uploaded successfully. ${file} created vectors: ${file}`
             );
           }
         } catch (error) {

@@ -43,6 +43,9 @@ async function run() {
       info("No client id or client secret provided, uploading without token");
     }
 
+    var baseUrl = context.payload.repository?.html_url || "";
+    var baseFileUrl = baseUrl + "/blob/" + context.sha + "/";
+
     uploadFiles({
       namespace,
       globPatterns,
@@ -53,6 +56,7 @@ async function run() {
         repo: context.repo.repo,
         owner: context.repo.owner,
       },
+      baseFileUrl: baseFileUrl,
     });
   } catch (error) {
     logError(JSON.stringify(error));

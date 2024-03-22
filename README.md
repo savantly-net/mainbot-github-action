@@ -25,6 +25,10 @@ This GitHub Action enables you to automatically upload files from your repositor
 
 **Optional** The client secret for OAuth authentication, if required by your API.  
 
+### `token-endpoint`
+
+**Optional** The token endpoint for OAuth authentication, if required by your API.
+
 
 
 ## Features
@@ -52,9 +56,12 @@ This GitHub Action enables you to automatically upload files from your repositor
    name: Upload Files to API
 
    on:
+     workflow_dispatch: {} # Enable manual triggering
      push:
        branches:
          - main  # Set your branch here
+       paths:
+         - 'docs/**'  # Set your docs folder path here
 
    jobs:
      upload:
@@ -68,9 +75,10 @@ This GitHub Action enables you to automatically upload files from your repositor
            with:
              glob-patterns: '**/*.txt'  # Set your file pattern here
              namespace: '/admin'
-             api-url: 'https://mainbot.savantly.net/api/document/add'
-             client-id: ${{ secrets.CLIENT_ID }}
-             client-secret: ${{ secrets.CLIENT_SECRET }}
+             api-url: 'https://mainbot.savantly.net' # Set your Mainbot API endpoint here
+             client-id: ${{ secrets.CLIENT_ID }} # Set your client ID here
+             client-secret: ${{ secrets.CLIENT_SECRET }} # Set your client secret here
+             token-endpoint: 'https://mainbot.savantly.net/oauth/token' # Set your token endpoint here
    ```
 
 3. **Set GitHub Secrets**
