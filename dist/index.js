@@ -36369,6 +36369,7 @@ const oidc_1 = __nccwpck_require__(6646);
 const upload_1 = __importDefault(__nccwpck_require__(562));
 function run() {
     return __awaiter(this, void 0, void 0, function* () {
+        var _a;
         try {
             const globPatterns = (0, core_1.getMultilineInput)("glob-patterns", {
                 required: true,
@@ -36397,6 +36398,8 @@ function run() {
             else {
                 (0, core_1.info)("No client id or client secret provided, uploading without token");
             }
+            var baseUrl = ((_a = github_1.context.payload.repository) === null || _a === void 0 ? void 0 : _a.html_url) || "";
+            var baseFileUrl = baseUrl + "/blob/" + github_1.context.sha + "/";
             (0, upload_1.default)({
                 namespace,
                 globPatterns,
@@ -36407,6 +36410,7 @@ function run() {
                     repo: github_1.context.repo.repo,
                     owner: github_1.context.repo.owner,
                 },
+                baseFileUrl: baseFileUrl,
             });
         }
         catch (error) {
@@ -36522,7 +36526,6 @@ const core_1 = __nccwpck_require__(9935);
 const fs = __importStar(__nccwpck_require__(7147));
 const glob_1 = __nccwpck_require__(3067);
 const node_fetch_1 = __importDefault(__nccwpck_require__(6143));
-const path = __importStar(__nccwpck_require__(1017));
 function postDocument(_a) {
     return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
         const headers = {
@@ -36566,7 +36569,7 @@ function postDocument(_a) {
     });
 }
 function uploadFiles(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, }) {
+    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, baseFileUrl }) {
         (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
         (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
         for (const globPattern of globPatterns) {
@@ -36574,16 +36577,16 @@ function uploadFiles(_a) {
                 for (const file of files) {
                     try {
                         const fileContent = fs.readFileSync(file, "utf8");
-                        const relativePath = path.relative(process.cwd(), file);
+                        const fullUrl = `${baseFileUrl}/${file}`;
                         const response = yield postDocument({
                             namespace,
                             documentText: fileContent,
-                            metadata: Object.assign(Object.assign({}, metadata), { path: relativePath }),
+                            metadata: Object.assign(Object.assign({}, metadata), { path: file, url: fullUrl }),
                             apiUrl,
                             token,
                         });
                         if (response) {
-                            (0, core_1.info)(`File uploaded successfully. ${relativePath} created vectors: ${file}`);
+                            (0, core_1.info)(`File uploaded successfully. ${file} created vectors: ${file}`);
                         }
                     }
                     catch (error) {

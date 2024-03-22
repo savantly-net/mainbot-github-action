@@ -39,7 +39,6 @@ const core_1 = require("@actions/core");
 const fs = __importStar(require("fs"));
 const glob_1 = require("glob");
 const node_fetch_1 = __importDefault(require("node-fetch"));
-const path = __importStar(require("path"));
 function postDocument(_a) {
     return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
         const headers = {
@@ -83,7 +82,7 @@ function postDocument(_a) {
     });
 }
 function uploadFiles(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, }) {
+    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, baseFileUrl }) {
         (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
         (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
         for (const globPattern of globPatterns) {
@@ -91,16 +90,16 @@ function uploadFiles(_a) {
                 for (const file of files) {
                     try {
                         const fileContent = fs.readFileSync(file, "utf8");
-                        const relativePath = path.relative(process.cwd(), file);
+                        const fullUrl = `${baseFileUrl}/${file}`;
                         const response = yield postDocument({
                             namespace,
                             documentText: fileContent,
-                            metadata: Object.assign(Object.assign({}, metadata), { path: relativePath }),
+                            metadata: Object.assign(Object.assign({}, metadata), { path: file, url: fullUrl }),
                             apiUrl,
                             token,
                         });
                         if (response) {
-                            (0, core_1.info)(`File uploaded successfully. ${relativePath} created vectors: ${file}`);
+                            (0, core_1.info)(`File uploaded successfully. ${file} created vectors: ${file}`);
                         }
                     }
                     catch (error) {
