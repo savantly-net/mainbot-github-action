@@ -1,0 +1,8 @@
+site_name: "Mainbot GitHub Action"
+site_description: Document Uploader for Mainbot. Upload changed documents on each push to your repository.
+repo_url: https://github.com/savantly-net/mainbot-github-action
+docs_dir: ./docs
+
+
+plugins:
+  - techdocs-core

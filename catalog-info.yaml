@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1beta1
+kind: Component
+metadata:
+  name: mainbot-github-action
+  title: Mainbot GitHub Action
+  description: Document Uploader for Mainbot. Upload changed documents on each push to your repository.
+  annotations:
+    github.com/project-slug: savantly-net/mainbot-github-action
+    backstage.io/techdocs-ref: dir:.
+  links:
+    - url: https://github.com/savantly-net/mainbot-github-action
+      title: Repository
+spec:
+  type: service
+  lifecycle: experimental
+  owner: savantly
+  providesApis: []
