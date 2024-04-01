@@ -36538,6 +36538,7 @@ function postDocument(_a) {
             (0, core_1.info)("No auth token provided");
         }
         const documentAddEndpoint = `${apiUrl}/api/document/add`;
+        const body = JSON.stringify(document);
         try {
             const response = yield (0, node_fetch_1.default)(documentAddEndpoint, {
                 method: "POST",
@@ -36554,6 +36555,7 @@ function postDocument(_a) {
                 }
             }
             const responseData = (yield response.json());
+            (0, core_1.info)(`uploaded: ${body}`);
             return responseData;
         }
         catch (error) {
