@@ -114,7 +114,7 @@ async function uploadFiles({
 
           if (response) {
             info(
-              `File uploaded successfully. ${file} created vectors: ${response}`
+              `uploaded ${fullUrl}`
             );
           }
         } catch (error) {
