@@ -31,6 +31,7 @@ async function postDocument({
   }
 
   const documentAddEndpoint = `${apiUrl}/api/document/add`;
+  const body = JSON.stringify(document);
 
   try {
     const response = await fetch(documentAddEndpoint, {
@@ -51,6 +52,7 @@ async function postDocument({
     }
 
     const responseData = (await response.json()) as AddDocumentResponse;
+    info(`uploaded: ${body}`);
     return responseData;
   } catch (error) {
     logError(`Error posting document: ${error}`);
