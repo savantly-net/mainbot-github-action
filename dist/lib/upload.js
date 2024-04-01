@@ -40,7 +40,7 @@ const fs = __importStar(require("fs"));
 const glob_1 = require("glob");
 const node_fetch_1 = __importDefault(require("node-fetch"));
 function postDocument(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, documentText, metadata, apiUrl, token, }) {
+    return __awaiter(this, arguments, void 0, function* ({ document, apiUrl, token, }) {
         const headers = {
             "Content-Type": "application/json",
             "Accept": "application/json",
@@ -57,11 +57,7 @@ function postDocument(_a) {
             const response = yield (0, node_fetch_1.default)(documentAddEndpoint, {
                 method: "POST",
                 headers: headers,
-                body: JSON.stringify({
-                    namespace: namespace,
-                    text: documentText,
-                    metadata: metadata,
-                }),
+                body: JSON.stringify(document),
             });
             if (!response.ok) {
                 try {
@@ -82,8 +78,13 @@ function postDocument(_a) {
     });
 }
 function uploadFiles(_a) {
-    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, metadata, baseFileUrl }) {
+    return __awaiter(this, arguments, void 0, function* ({ namespace, globPatterns, apiUrl, token, baseFileUrl, commitOwner, commitRepo, commitSha, }) {
         (0, core_1.info)(`uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`);
+        var metadata = {
+            commitSha: commitSha || "",
+            commitRepo: commitRepo || "",
+            commitOwner: commitOwner || "",
+        };
         (0, core_1.info)(`attaching metadata: ${JSON.stringify(metadata)}`);
         for (const globPattern of globPatterns) {
             yield (0, glob_1.glob)(globPattern, { nodir: true }).then((files) => __awaiter(this, void 0, void 0, function* () {
@@ -92,14 +93,19 @@ function uploadFiles(_a) {
                         const fileContent = fs.readFileSync(file, "utf8");
                         const fullUrl = `${baseFileUrl}/${file}`;
                         const response = yield postDocument({
-                            namespace,
-                            documentText: fileContent,
-                            metadata: Object.assign(Object.assign({}, metadata), { path: file, url: fullUrl }),
+                            document: {
+                                namespace,
+                                id: `git://${commitOwner}/${commitRepo}/${file}`,
+                                uri: fullUrl,
+                                text: fileContent,
+                                chunk: true,
+                                metadata: Object.assign(Object.assign({}, metadata), { path: file, url: fullUrl }),
+                            },
                             apiUrl,
                             token,
                         });
                         if (response) {
-                            (0, core_1.info)(`File uploaded successfully. ${file} created vectors: ${file}`);
+                            (0, core_1.info)(`uploaded ${fullUrl}`);
                         }
                     }
                     catch (error) {
