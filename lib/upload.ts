@@ -3,21 +3,18 @@ import * as fs from "fs";
 import { glob } from "glob";
 import fetch from "node-fetch";
 import * as path from "path";
+import { DocumentDto } from "./document-dto";
 
 export type AddDocumentResponse = Array<string>;
 
 export interface PostDocumentOptions {
-  namespace: string;
-  documentText: string;
-  metadata: Record<string, string>;
+  document: DocumentDto;
   apiUrl: string;
   token?: string;
 }
 
 async function postDocument({
-  namespace,
-  documentText,
-  metadata,
+  document,
   apiUrl,
   token,
 }: PostDocumentOptions) {
@@ -39,11 +36,7 @@ async function postDocument({
     const response = await fetch(documentAddEndpoint, {
       method: "POST",
       headers: headers,
-      body: JSON.stringify({
-        namespace: namespace,
-        text: documentText,
-        metadata: metadata,
-      }),
+      body: JSON.stringify(document),
     });
 
     if (!response.ok) {
@@ -70,8 +63,10 @@ export interface UploadFilesOptions {
   globPatterns: string[];
   apiUrl: string;
   token?: string;
-  metadata: Record<string, string>;
   baseFileUrl: string;
+  commitSha?: string;
+  commitRepo?: string;
+  commitOwner?: string;
 }
 
 async function uploadFiles({
@@ -79,12 +74,19 @@ async function uploadFiles({
   globPatterns,
   apiUrl,
   token,
-  metadata,
-  baseFileUrl
+  baseFileUrl,
+  commitOwner,
+  commitRepo,
+  commitSha,
 }: UploadFilesOptions): Promise<void> {
   info(
     `uploadFiles: namespace: ${namespace}, globPatterns: ${globPatterns}, apiUrl: ${apiUrl}`
   );
+  var metadata = {
+    commitSha: commitSha || "",
+    commitRepo: commitRepo || "",
+    commitOwner: commitOwner || "",
+  };
   info(`attaching metadata: ${JSON.stringify(metadata)}`);
 
   for (const globPattern of globPatterns) {
@@ -94,12 +96,17 @@ async function uploadFiles({
           const fileContent = fs.readFileSync(file, "utf8");
           const fullUrl = `${baseFileUrl}/${file}`;
           const response = await postDocument({
-            namespace,
-            documentText: fileContent,
-            metadata: {
-              ...metadata,
-              path: file,
-              url: fullUrl,
+            document: {
+              namespace,
+              id: `git://${commitOwner}/${commitRepo}/${file}`,
+              uri: fullUrl,
+              text: fileContent,
+              chunk: true,
+              metadata: {
+                ...metadata,
+                path: file,
+                url: fullUrl,
+              },
             },
             apiUrl,
             token,
@@ -107,7 +114,7 @@ async function uploadFiles({
 
           if (response) {
             info(
-              `File uploaded successfully. ${file} created vectors: ${file}`
+              `File uploaded successfully. ${file} created vectors: ${response}`
             );
           }
         } catch (error) {

@@ -3,7 +3,7 @@ import {
   getMultilineInput,
   info,
   error as logError,
-  setFailed,
+  setFailed
 } from "@actions/core";
 import { context } from "@actions/github";
 import { OIDCTokenResponse, getOidcAccessToken } from "./lib/oidc";
@@ -51,11 +51,9 @@ async function run() {
       globPatterns,
       apiUrl,
       token: token?.access_token,
-      metadata: {
-        commitSha: context.sha,
-        repo: context.repo.repo,
-        owner: context.repo.owner,
-      },
+      commitSha: context.sha,
+      commitRepo: context.repo.repo,
+      commitOwner: context.repo.owner,
       baseFileUrl: baseFileUrl,
     });
   } catch (error) {
